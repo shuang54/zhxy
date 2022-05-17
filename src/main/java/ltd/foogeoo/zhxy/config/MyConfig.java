@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.atguigu.zhxy.mapper")
-public class MpConfig {
+@MapperScan("ltd.foogeoo.zhxy.mapper")
+public class MyConfig {
 
     /**
      * 分页插件
