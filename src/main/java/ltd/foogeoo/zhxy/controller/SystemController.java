@@ -1,6 +1,9 @@
 package ltd.foogeoo.zhxy.controller;
 
 import io.jsonwebtoken.Jwt;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import ltd.foogeoo.zhxy.pojo.Admin;
 import ltd.foogeoo.zhxy.pojo.LoginForm;
 import ltd.foogeoo.zhxy.pojo.Student;
@@ -14,19 +17,23 @@ import ltd.foogeoo.zhxy.util.Result;
 import ltd.foogeoo.zhxy.util.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author LISHU
  */
+@Api(tags = "系统管理器")
 @RestController
 @RequestMapping("/sms/system")
 public class SystemController {
@@ -37,6 +44,31 @@ public class SystemController {
     @Autowired
     private TeacherService teacherService;
 
+
+
+    @ApiOperation("上传图片")
+    @PostMapping("/headerImgUpload")
+    public Result headerImgUpload(
+            @ApiParam("头像文件") @RequestPart("multipartFile") MultipartFile multipartFile,
+            HttpServletRequest request
+            ){
+        String uuid = UUID.randomUUID().toString().replace("-","").toLowerCase();
+        String originalFilename = multipartFile.getOriginalFilename();
+        int i = originalFilename.lastIndexOf(".");
+        String newFileName = uuid.concat(originalFilename.substring(i));
+        //保存文件
+        String portraitPath = "E:/myJavaStudy/course/zhxy/target/classes/public/upload/".concat(newFileName);
+        try {
+            multipartFile.transferTo(new File(portraitPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //响应图片的路径
+        String path = "upload/".concat(newFileName);
+        return Result.ok(path);
+    }
+
+    @ApiOperation("通过token获取用户信息")
     @GetMapping("/getInfo")
     public Result getInfoByToken(@RequestHeader("token") String token){
 
@@ -75,6 +107,7 @@ public class SystemController {
      * @param request
      * @param response
      */
+    @ApiOperation("获取验证码")
     @GetMapping("/getVerifiCodeImage")
     public void getVerifiCodeImage(HttpServletRequest request, HttpServletResponse response){
         //获取图片
@@ -98,6 +131,7 @@ public class SystemController {
      * @param request
      * @return
      */
+    @ApiOperation("登录")
     @PostMapping("/login")
     public Result login(@RequestBody LoginForm loginForm,HttpServletRequest request){
         //验证码校验

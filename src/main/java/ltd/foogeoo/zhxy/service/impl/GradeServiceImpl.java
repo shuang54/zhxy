@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Service("gradeServiceImpl")
 @Transactional
 public class GradeServiceImpl extends ServiceImpl<GradeMapper, Grade> implements GradeService {
@@ -25,5 +27,10 @@ public class GradeServiceImpl extends ServiceImpl<GradeMapper, Grade> implements
         queryWrapper.orderByDesc("id");
         Page<Grade> page = baseMapper.selectPage(pageParam,queryWrapper);
         return page;
+    }
+
+    @Override
+    public List<Grade> getGrades() {
+        return baseMapper.selectList(null);
     }
 }

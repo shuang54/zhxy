@@ -18,7 +18,7 @@ public class Student {
     private Integer id;
     private String sno;
     private String name;
-    private char gender;
+    private String gender;
     private String password;
     private String email;
     private String telephone;
